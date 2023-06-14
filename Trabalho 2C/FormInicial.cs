@@ -30,7 +30,7 @@ namespace Trabalho_2C
         {
             Inserir inserir = new Inserir();
             inserir.ShowDialog();
-            this.Close();
+            inserir.Close();
         }
     }
 }
