@@ -17,6 +17,7 @@ namespace Trabalho_2C
         Questão questao;
         string diretorioAtual;
         private Dictionary<string, int> valoresI = new Dictionary<string, int>();
+
         public Inserir()
         {
             InitializeComponent();
@@ -28,7 +29,6 @@ namespace Trabalho_2C
             for (int i = 0; i < diretorios.Length; i++)
             {
                 string nomeDaDisciplina = diretorios[i].Remove(0, diretorioAtual.Length);
-
                 cmbDisciplinas.Items.Add(nomeDaDisciplina);
             }
 
@@ -47,6 +47,11 @@ namespace Trabalho_2C
                         // Salvar o valor de 'i' correspondente à pasta atual no dicionário
                         valoresI[nomeDaDisciplina] = SalvarI;
                     }
+                }
+                string acertoPathFile = Path.Combine(diretorio, "pasta.txt");
+                if (File.Exists(acertoPathFile))
+                {
+                    Directory.CreateDirectory(acertoPathFile);
                 }
             }
         }
@@ -73,7 +78,9 @@ namespace Trabalho_2C
             // Salvar o valor atualizado de 'i' no arquivo de configuração da pasta atual
             string configFilePath = Path.Combine(diretorioAtual, nomeDaDisciplina, "config.txt");
             File.WriteAllText(configFilePath, i.ToString());
-
+            string acertosFilePath = Path.Combine(diretorioAtual, nomeDaDisciplina, "quantidadeAcertos.txt");
+            File.WriteAllText(acertosFilePath, "0");
+            // Salvar o valor atualizado de 'i' no arquivo de configuração da pasta atual
             FileStream local = new FileStream(diretorioAtual + cmbDisciplinas.Text + @"\arquivo" + i + ".txt", FileMode.Create, FileAccess.Write);
             StreamWriter gravar = new StreamWriter(local);
             gravar.WriteLine(txb_Enunciado.Text);
@@ -83,15 +90,14 @@ namespace Trabalho_2C
             gravar.WriteLine(txb_OpcD.Text);
             gravar.WriteLine(txb_OpcE.Text);
             gravar.WriteLine(txb_Solucao.Text);
-            gravar.WriteLine(txb_Gabarito.Text);
+            gravar.WriteLine(txb_acertos.Text);
 
             gravar.Close();
-
         }
 
         private void Inserir_Load(object sender, EventArgs e)
         {
-           
+
         }
     }
 }

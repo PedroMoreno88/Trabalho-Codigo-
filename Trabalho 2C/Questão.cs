@@ -14,5 +14,6 @@ namespace Trabalho_2C
         public string altC;
         public string altD;
         public string altE;
+        public string pontuação;
     }
 }
