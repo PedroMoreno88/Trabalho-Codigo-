@@ -37,7 +37,7 @@
             this.cmbDisciplinas = new System.Windows.Forms.ComboBox();
             this.button2 = new System.Windows.Forms.Button();
             this.txb_Solucao = new System.Windows.Forms.TextBox();
-            this.txb_Gabarito = new System.Windows.Forms.TextBox();
+            this.txb_acertos = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txb_Enunciado
@@ -109,19 +109,21 @@
             this.txb_Solucao.Size = new System.Drawing.Size(100, 20);
             this.txb_Solucao.TabIndex = 9;
             // 
-            // txb_Gabarito
+            // txb_acertos
             // 
-            this.txb_Gabarito.Location = new System.Drawing.Point(51, 265);
-            this.txb_Gabarito.Name = "txb_Gabarito";
-            this.txb_Gabarito.Size = new System.Drawing.Size(100, 20);
-            this.txb_Gabarito.TabIndex = 10;
+            this.txb_acertos.Enabled = false;
+            this.txb_acertos.Location = new System.Drawing.Point(51, 265);
+            this.txb_acertos.Name = "txb_acertos";
+            this.txb_acertos.Size = new System.Drawing.Size(100, 20);
+            this.txb_acertos.TabIndex = 10;
+            this.txb_acertos.Text = "0";
             // 
             // Inserir
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.txb_Gabarito);
+            this.Controls.Add(this.txb_acertos);
             this.Controls.Add(this.txb_Solucao);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.cmbDisciplinas);
@@ -150,6 +152,6 @@
         private System.Windows.Forms.ComboBox cmbDisciplinas;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox txb_Solucao;
-        private System.Windows.Forms.TextBox txb_Gabarito;
+        private System.Windows.Forms.TextBox txb_acertos;
     }
 }

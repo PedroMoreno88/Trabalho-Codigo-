@@ -264,9 +264,9 @@
             this.lblAcertos.Location = new System.Drawing.Point(11, 494);
             this.lblAcertos.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblAcertos.Name = "lblAcertos";
-            this.lblAcertos.Size = new System.Drawing.Size(80, 13);
+            this.lblAcertos.Size = new System.Drawing.Size(74, 13);
             this.lblAcertos.TabIndex = 12;
-            this.lblAcertos.Text = "80% de acertos";
+            this.lblAcertos.Text = "0% de acertos";
             // 
             // prbAcertos
             // 
