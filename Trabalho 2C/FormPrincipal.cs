@@ -59,37 +59,72 @@ namespace Trabalho_2C
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            string diretorioMateria = diretorioAtual + cmbDisciplinas.Text;
+            string[] arquivos = Directory.GetFiles(diretorioMateria, "*.txt");
+            if (arquivos.Length > 0 && Path.GetFileName(arquivos[0]) == "config.txt")
+            {
+                cmbDisciplinas.Text = ""; // Limpa a seleção da disciplina
+                rdbA.Checked = false; rdbB.Checked = false;
+                rdbC.Checked = false; rdbD.Checked = false;
+                rdbE.Checked = false;
+                rdbA.Text = null; rdbB.Text = null;
+                rdbC.Text = null; rdbD.Text = null;
+                rdbE.Text = null;
+                lblAcertos.Text = acertos + "% de acertos";
+                txtEnunciado.Text = "";
+                cmbDisciplinas.Enabled = true;
+                cmbDisciplinas.Text = "";
+                btnResponder.Enabled = false;
+                btnProximaPergunta.Enabled = false;
+                return; // Sai do método sem executar o restante do código
+            }
+
+            //Ir ao direitorio da pasta quantidadeAcertos
             string acertoPath = diretorioAtual + cmbDisciplinas.Text + @"\quantidadeAcertos" + ".txt";
+            //Acessar o arquivo quantidadeAcertos
             using (StreamReader ler = new StreamReader(acertoPath))
             {
+                //Ler o que esta dentro dele
                 string conteudo = ler.ReadLine();
+                //guarda oque esta nele na lbl acertos
+                lblAcertos.Text = conteudo + "% de acertos";
 
-                lblAcertos.Text = conteudo + "%" + "acertos";
+
+                if (cmbDisciplinas.Text == null)
+                {
+                    // se nao tiver nada no cmb ele zera os acertos
+                    acertos = 0;
+                    // e atualiza o label
+                    lblAcertos.Text = acertos + "% de acertos";
+                }
+
             }
+            //J = 0 para que ele acesse o primeiro arquivo
             j = 0;
+            //desativar os radionButton
             rdbA.Checked = false;
             rdbB.Checked = false;
             rdbC.Checked = false;
             rdbD.Checked = false;
             rdbE.Checked = false;
+            //limpar pontuação do user
             acertos = 0;
+            // atualizar label
             lblAcertos.Text = acertos + "% de acertos";
 
-            // Não precisa se preocupar aqui -----------------------
             // Define o diretório da matéria selecionada na comboBox1
-            string diretorioMateria = diretorioAtual + cmbDisciplinas.Text;
+
             // Obtém um vetor de strings contendo o diretório para todos os arquivos
 
-            string[] arquivos = Directory.GetFiles(diretorioMateria, "*.txt");
             string[] linhas = File.ReadAllLines(arquivos[j]);
 
-            // Não precisa se preocupar aqui 
             // Caso não haja nenhum arquivo no diretorio da matéria selecionada, mostrar uma mensagem ao usuário
             if (arquivos.Length == 0)
             {
                 questao = new Questão();
+                //ele ira mostra um popup de aviso
                 MostrarPopup();
-
+                // e não ira puxar nenhum informação 
                 questao.enunciado = null;
                 questao.altA = null;
                 questao.altB = null;
@@ -137,20 +172,23 @@ namespace Trabalho_2C
 
         private void btnProximaPergunta_Click(object sender, EventArgs e)
         {
-            j += 1;
+            txtResolucao.Text = null;
+            j += 1;//toda vez que for ativo essa função o J atualiza
+
             string diretorioMateria = diretorioAtual + cmbDisciplinas.Text;
             string acertoPath = diretorioAtual + cmbDisciplinas.Text + @"\quantidadeAcertos" + ".txt";
-            
+
             string[] arquivos = Directory.GetFiles(diretorioMateria, "*.txt");
             try
             {
-                    StreamReader leitor = new StreamReader(arquivos[j]);
-                    questao.enunciado = leitor.ReadLine();
-                    questao.altA = leitor.ReadLine();
-                    questao.altB = leitor.ReadLine();
-                    questao.altC = leitor.ReadLine();
-                    questao.altD = leitor.ReadLine();
-                    questao.altE = leitor.ReadLine();
+                //puxa as informações da pasta e passa para a classe
+                StreamReader leitor = new StreamReader(arquivos[j]);
+                questao.enunciado = leitor.ReadLine();
+                questao.altA = leitor.ReadLine();
+                questao.altB = leitor.ReadLine();
+                questao.altC = leitor.ReadLine();
+                questao.altD = leitor.ReadLine();
+                questao.altE = leitor.ReadLine();
                 // Preenche os controles do formulário usando o objeto questão
                 txtEnunciado.Text = questao.enunciado;
                 rdbA.Text = questao.altA;
@@ -158,19 +196,45 @@ namespace Trabalho_2C
                 rdbD.Text = questao.altC;
                 rdbC.Text = questao.altD;
                 rdbE.Text = questao.altE;
+                //novamente ler a pasta quantidadeAcertos
                 using (StreamReader ler = new StreamReader(acertoPath))
                 {
                     string conteudo = ler.ReadLine();
 
-                    lblAcertos.Text = conteudo + "%" + "acertos";
+                    lblAcertos.Text = conteudo + "% de acertos";
                 }
+
             }
             catch (Exception ex)
             {
 
             }
+
+            int indiceAtual = j;
+            while (indiceAtual + 1 < arquivos.Length && Path.GetFileName(arquivos[indiceAtual]) == "config.txt" || indiceAtual + 1 < arquivos.Length && Path.GetFileName(arquivos[indiceAtual + 1]) == "quantidadeAcertos.txt")
+            {// verifica se o proximo arquivo está dentro do indice e se seu nome e config ou ele faz a mesma coisa so que com o nome "quantidadeAcertos"
+
+
+                indiceAtual++; // Incrementar o índice para passar para o próximo arquivo
+            }
+            if (indiceAtual + 1 >= arquivos.Length)// se a algum arquivo para percorrer 
+            {// se for true ele faz tudo isso ai embaixo
+                rdbA.Checked = false; rdbB.Checked = false;
+                rdbC.Checked = false; rdbD.Checked = false;
+                rdbE.Checked = false;
+                lblAcertos.Text = acertos + "% de acertos";
+                txtEnunciado.Text = "";
+                cmbDisciplinas.Enabled = true;
+                cmbDisciplinas.Text = "";
+                btnResponder.Enabled = false;
+                btnProximaPergunta.Enabled = false;
+
+                return; // Sair da função
+            }
+
+
         }
-        private void MostrarPopup()
+        private void MostrarPopup()//PopUp
         {
             string title = "Aviso";
             string message = "A diciplina que você escolheu não \n possui questões!";
@@ -183,101 +247,101 @@ namespace Trabalho_2C
         private void btnResponder_Click(object sender, EventArgs e)
         {
             string acertoPath = diretorioAtual + cmbDisciplinas.Text + @"\quantidadeAcertos" + ".txt";
-            using (StreamReader ler = new StreamReader(acertoPath))
-            {
-                string conteudo = ler.ReadLine();
 
-                lblAcertos.Text = conteudo + "%" + "acertos";
-            }
             string diretorioMaterias = diretorioAtual + cmbDisciplinas.Text;
             string[] arquivos = Directory.GetFiles(diretorioMaterias, "*.txt");
-            string[] linhas = null;
-                int proximoIndice = j + 1; // Próximo índice
-                if (proximoIndice <= arquivos.Length) // Verificar se o próximo índice está dentro dos limites do array
+            string[] linhas = null;// anular linhas para não dar comflito com as respostas anteriores
+            int proximoIndice = j + 1; // Próximo índice
+            if (proximoIndice <= arquivos.Length) // Verificar se o próximo índice está dentro dos limites do array
+            {
+                if (proximoIndice == arquivos.Length)// se for igual significa que esta mais q o limite
                 {
-                    if(proximoIndice == arquivos.Length)
+                    proximoIndice--;//subtraimos para ficar dentro do limite
+                }
+                string proximoArquivo = arquivos[proximoIndice];//Armazena o caminho da pergunta
+                if (File.Exists(proximoArquivo))// verifica se existe
                 {
-                    proximoIndice--;
+                    // O próximo arquivo existe, você pode acessá-lo aqui
+                    linhas = File.ReadAllLines(proximoArquivo);
+
                 }
-                    string proximoArquivo = arquivos[proximoIndice];
-                    if (File.Exists(proximoArquivo))
-                    {
-                        // O próximo arquivo existe, você pode acessá-lo aqui
-                        linhas = File.ReadAllLines(proximoArquivo);
-
-                    }
-                    else
-                    {
-                        return;
-                    }
-                    linhas = File.ReadAllLines(arquivos[j]);
-                    int indiceAtual = j; // Use o valor de 'j' atual
-
-
-                    string respostaUser = "";
-                    if (linhas.Length >= 7)
-                    {
-                        if (rdbA.Checked)
-                        {
-                            respostaUser = lblA.Text;
-                        }
-                        if (rdbB.Checked)
-                        {
-                            respostaUser = lblB.Text;
-                        }
-                        if (rdbC.Checked)
-                        {
-                            respostaUser = lblC.Text;
-                        }
-                        if (rdbD.Checked)
-                        {
-                            respostaUser = lblD.Text;
-                        }
-                        if (rdbE.Checked)
-                        {
-                            respostaUser = lblE.Text;
-                        }
-
-                    }
-
-                    if (linhas[6].ToLower() == respostaUser.ToLower())
-                    {
-                        acertos += 10;
-                        lblAcertos.Text = acertos + "% de acertos";
-
-                        btnProximaPergunta_Click(null, EventArgs.Empty);
-                        cmbDisciplinas.Enabled = false;
+                else
+                {
+                    return;// se não exister interrompemos o codigo
                 }
-                    else
-                    {
-                        if (acertos > 0)
-                            acertos -= 10;
-                        lblAcertos.Text = acertos + "% de acertos";
-                        btnProximaPergunta_Click(null, EventArgs.Empty);
-                    
-                }
-                    
-                // Verificar se o próximo arquivo tem o nome "config.txt"
-                while (indiceAtual + 1 < arquivos.Length && Path.GetFileName(arquivos[indiceAtual + 1]) == "config.txt" || indiceAtual + 1 < arquivos.Length && Path.GetFileName(arquivos[indiceAtual + 1]) == "quantidadeAcertos.txt")
-                    {
-   
-                    indiceAtual++; // Incrementar o índice para passar para o próximo arquivo
-                    }
-                    if (indiceAtual + 1 >= arquivos.Length)
-                    {
-                        rdbA.Checked = false; rdbB.Checked = false;
-                        rdbC.Checked = false; rdbD.Checked = false;
-                        rdbE.Checked = false;
-                        lblAcertos.Text = acertos + "% de acertos";
-                        txtEnunciado.Text = "";
-                        cmbDisciplinas.Enabled = true;
-                        cmbDisciplinas.Text = "";
-                        btnResponder.Enabled = false;
-                        btnProximaPergunta.Enabled = false;
+                linhas = File.ReadAllLines(arquivos[j]);// carrega linhas do arquivo 
+                ; // Use o valor de 'j' atual, usada mais a frente
 
-                    return; // Sair da função
+
+                string respostaUser = "";// resposta que o user seleciono
+                string comentario = "";
+                if (linhas.Length >= 7)// ira ver se possui mais de 7 linhas ou igual
+                {
+                    if (rdbA.Checked)// ira verificar qual opção o user marco
+                    {
+                        respostaUser = lblA.Text;
+                        comentario = respostaUser + rdbA.Text;
                     }
+                    if (rdbB.Checked)
+                    {
+                        respostaUser = lblB.Text;
+                        comentario = respostaUser + rdbB.Text;
+                    }
+                    if (rdbC.Checked)
+                    {
+                        respostaUser = lblC.Text;
+                        comentario = respostaUser + rdbC.Text;
+                    }
+                    if (rdbD.Checked)
+                    {
+                        respostaUser = lblD.Text;
+                        comentario = respostaUser + rdbD.Text;
+                    }
+                    if (rdbE.Checked)
+                    {
+                        respostaUser = lblE.Text;
+                        comentario = respostaUser + rdbE.Text;
+                    }
+
                 }
+
+                if (linhas[6].ToLower() == respostaUser.ToLower())// ira na linha 6 ver se a resposta do usuario bate com a do gabarito
+                {
+                    acertos += 10;// Se bater ele adicionar 10
+                    lblAcertos.Text = acertos + "% de acertos";
+                    txtResolucao.Text = comentario;
+
+                    cmbDisciplinas.Enabled = false;
+                    using (StreamWriter guardarRes = new StreamWriter(acertoPath))// entra no quantidade de acertos
+                    {
+                        guardarRes.WriteLine(acertos);//escreve dentro dele o quão acertamos na questão
+                    }
+                    using (StreamReader ler = new StreamReader(acertoPath))
+                    {
+                        string conteudo = ler.ReadLine();
+
+                        lblAcertos.Text = conteudo + "% de acertos";
+                    }
+
+                }
+                else
+                {
+                    if (acertos > 0)
+                        acertos -= 10;// se não bater ele -10
+                    lblAcertos.Text = acertos + "% de acertos";
+                    using (StreamWriter guardarRes = new StreamWriter(acertoPath))
+                    {
+                        guardarRes.WriteLine(acertos);// escreve o quão erramos
+                    }
+                    using (StreamReader ler = new StreamReader(acertoPath))
+                    {
+                        string conteudo = ler.ReadLine();
+
+                        lblAcertos.Text = conteudo + "%" + " de " + "acertos";
+                    }
+
+                }
+            }
         }
     }
 }
